@@ -1,5 +1,5 @@
 ### Founding Members
-IGSIO was founded at the NAMIC 2016 Winter Project week in Boston, Massachusetts. Founding members include:
+IGSIO was founded at the NAMIC 2016 Winter Project week in Cambridge, Massachusetts. Founding members include:
 * Andras Lasso @lassoan (Laboratory for Percutaneous Surgery, Queen's University, Canada)
 * Adam Rankin @adamrankin (Robarts Research Institute, Western University, Canada)
 * Christian Askeland @christiana (SINTEF, Norway)
