@@ -28,18 +28,238 @@
       </header>
       <section>
         <h3>
+<a id="mission" class="anchor" href="#mission" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mission</h3>
+
+<p>The IGSIO was founded after lengthy discussions regarding the standardization of tracked ultrasound communication to work towards improving the interoperability between industrial products and research software platforms <a href="http://wiki.na-mic.org/Wiki/index.php/2016_Winter_Project_Week/Projects/TrackedUltrasoundStandardization">[1]</a>. Prior to these discussions, the commonly accepted solution was to pass specially constructed messages over the OpenIGTLink protocol. This workaround solution indicated that a more formal definition was needed to enable the research community to move towards a vision held by the founding members.</p>
+
+<p>The mission of the IGSIO is to develop a written standard defining the communication of tracked ultrasound systems between software platforms and to produce an open-source reference implementation of an OpenIGTLink client and server for use by any adhering software platform.</p>
+
+<h3>
+<a id="goals" class="anchor" href="#goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goals</h3>
+
+<p>We seek to achieve the following goals:</p>
+
+<ul>
+<li>To advance the image-guided systems community through co-operation and collaboration</li>
+<li>To define a written standard for tracked ultrasound communication</li>
+<li>To provide a reference standard implementation of a tracked ultrasound client/server</li>
+</ul>
+
+<h3>
 <a id="founding-members" class="anchor" href="#founding-members" aria-hidden="true"><span class="octicon octicon-link"></span></a>Founding Members</h3>
 
 <p>IGSIO was founded at the NAMIC 2016 Winter Project week in Cambridge, Massachusetts. Founding members include:</p>
 
 <ul>
-<li>Andras Lasso <a href="https://github.com/lassoan" class="user-mention">@lassoan</a> (Laboratory for Percutaneous Surgery, Queen's University, Canada)</li>
-<li>Adam Rankin <a href="https://github.com/adamrankin" class="user-mention">@adamrankin</a> (Robarts Research Institute, Western University, Canada)</li>
-<li>Christian Askeland <a href="https://github.com/christiana" class="user-mention">@christiana</a> (SINTEF, Norway)</li>
-<li>Simon Drouin <a href="https://github.com/SimonDrouin" class="user-mention">@SimonDrouin</a> (McConnell Brain Imaging Center, McGill University, Canada)</li>
-<li>Thomas Kirchner <a href="https://github.com/thkirchner" class="user-mention">@thkirchner</a> (German Cancer Research Center (DKFZ), Helmholtz Association, Germany)</li>
-<li>Janek Gröhl <a href="https://github.com/jgroehl" class="user-mention">@jgroehl</a> (German Cancer Research Center (DKFZ), Helmholtz Association, Germany)</li>
+<li>Andras Lasso <a href="https://github.com/lassoan" class="user-mention">@lassoan</a> (<a href="http://perk.cs.queensu.ca/">Laboratory for Percutaneous Surgery</a>, Queen's University, Canada)</li>
+<li>Adam Rankin <a href="https://github.com/adamrankin" class="user-mention">@adamrankin</a> (<a href="http://www.imaging.robarts.ca/petergrp/Research">VASST Laboratory</a>, Western University, Canada)</li>
+<li>Christian Askeland <a href="https://github.com/christiana" class="user-mention">@christiana</a> (<a href="http://www.sintef.no/en/technology-and-society/departments/medical-technology/#/">SINTEF Medical Technology</a>, Norway)</li>
+<li>Simon Drouin <a href="https://github.com/drouin-simon" class="user-mention">@drouin-simon</a> (<a href="http://www.bic.mni.mcgill.ca/ResearchLabsIPL/HomePage">Neuroimaging and Surgical Tools Lab</a>, McGill University, Canada)</li>
+<li>Thomas Kirchner <a href="https://github.com/thkirchner" class="user-mention">@thkirchner</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
+<li>Janek Gröhl <a href="https://github.com/jgroehl" class="user-mention">@jgroehl</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
 </ul>
+
+<h3>
+<a id="the-standard-tracked-ultrasound-over-openigtlink-tuo" class="anchor" href="#the-standard-tracked-ultrasound-over-openigtlink-tuo" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Standard: Tracked Ultrasound over OpenIGTLink (TUO)</h3>
+
+<p>The standard is presented here as a draft. Extensions to the OpenIGTLink protocol have been proposed <a href="http://openigtlink.org/protocols/v3_proposal.html">[2]</a> and implementation of these extensions is underway <a href="https://github.com/IGSIO/OpenIGTLinkIF">[3]</a>.</p>
+
+<blockquote>
+<h4>
+<a id="standard-draft" class="anchor" href="#standard-draft" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard Draft</h4>
+
+<p>Revision 0.1 of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
+
+<h5>
+<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h5>
+
+<hr>
+
+<p>These are the parameters that are common to the majority of ultrasound imaging devices and are thus supported by the standard. See individual commands for specific usage.</p>
+
+<p><em>Read-write</em></p>
+
+<ul>
+<li>Depth (mm): (“40”, “45”, “50”, …) </li>
+<li>ImagingMode (string): (“bmode”, “bmode+rf”, “bmode+angio”, “rf+angio”, ...)</li>
+<li>Probe (string): probe name (“L14-5/38”)</li>
+<li>Frequency (MHz)</li>
+<li>DynRange (db)</li>
+<li>Gain (%)</li>
+<li>Power (%)</li>
+<li>Zoom (%)</li>
+<li>SoundVelocity (m/s)</li>
+<li>TGC (space-separated string, each entry -1.0 to 1.0)</li>
+<li>AcquisitionState (string): “FREEZE” or “RUN”</li>
+</ul>
+
+<p><em>Read-only</em></p>
+
+<ul>
+<li>ClipRectangleOrigin="27 27"</li>
+<li>ClipRectangleSize="766 562"</li>
+<li>FanAnglesDeg=”-30 30” (for 3D: FanAnglesDeg=”-30 30 -15 15”)</li>
+<li>FanOriginPixel=”240 10”</li>
+<li>FanRadiusStartPixel=”30”</li>
+<li>FanRadiusStopPixel=”500”</li>
+<li>Encoding: how to interpret values ("BRIGHTNESS", "RF_REAL", "RF_IQ_LINE", "RF_I_LINE_Q_LINE", "RGB_COLOR")</li>
+</ul>
+
+<h4>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands</h4>
+
+<hr>
+
+<p>Presented here are the commands supported by the standard. Their syntax is defined and their usage is described. All XML strings are passed in the body of the OpenIGTLink (v3+) <em>COMMAND</em> message type.</p>
+
+<h5>
+<a id="setdeviceparameters" class="anchor" href="#setdeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>SetDeviceParameters</h5>
+
+<p>Specify a list of parameters to set their current hardware values</p>
+
+<p><em>Message</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+    &lt;Parameter Name=”Depth” Value=”45” /&gt;
+    &lt;Parameter Name=”Gain” Value=”35” /&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Response 1</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Result&gt;SetDeviceParameters: success&lt;/Result&gt;
+  &lt;Parameter Name=”Depth” Value=”45” /&gt;
+  &lt;Parameter Name=”Gain” Value=”35” /&gt;
+  ...
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Response 2</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Result&gt;SetDeviceParameters: failure&lt;/Result&gt; &lt;!-- see command status error code --&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<h5>
+<a id="getdeviceparameters" class="anchor" href="#getdeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>GetDeviceParameters</h5>
+
+<p>Specify a list of parameters to retrieve their current hardware values (not cached)</p>
+
+<p><em>Message</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Parameter Name=”Depth” /&gt;
+  &lt;Parameter Name=”Gain” /&gt;
+  ...
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Response</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Result&gt;GetDeviceParameters: success&lt;/Result&gt;
+  &lt;Parameter Name=”Depth” Value=”45” /&gt;
+  &lt;Parameter Name=”Gain” Value=”35” /&gt;
+  ...
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<h5>
+<a id="subscribedeviceparameters" class="anchor" href="#subscribedeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>SubscribeDeviceParameters</h5>
+
+<p>This will cause the server to send a GetDeviceParameters reply every time any of the subscribed parameters change.</p>
+
+<p><em>Message</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Parameter Name=”Depth” Subscribe=”TRUE” /&gt;
+  &lt;Parameter Name=”Gain” Subscribe=”FALSE” /&gt;
+  ...
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Response</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Result&gt;SubscribeDeviceParameters: success&lt;/Result&gt;
+  &lt;Parameter Name=”Depth” Subscribed="TRUE" /&gt;
+  &lt;Parameter Name=”Gain” Subscribed="FALSE" /&gt;
+  ...
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<h5>
+<a id="getcapabilities" class="anchor" href="#getcapabilities" aria-hidden="true"><span class="octicon octicon-link"></span></a>GetCapabilities</h5>
+
+<p>Request the functionality of the server's current configuration
+Note: future functionality support, SINTEF will specify and implement.</p>
+
+<p><em>Message</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Response</em></p>
+</blockquote>
+
+<pre><code>&lt;Command&gt;
+  &lt;Result&gt;GetCapabilities: success&lt;/Result&gt;
+  &lt;UltrasoundCapabilities&gt;
+    &lt;Probes&gt;
+      &lt;Probe name="L14-5/38"/&gt;
+      &lt;Probe name="C5-2/42"/&gt;
+    &lt;/Probes&gt;
+    &lt;ImagingModes&gt;
+      &lt;ImagingMode Name=”b-mode+angio”&gt;B-Mode,Angio&lt;/ImagingMode&gt;
+    &lt;/ImagingModes&gt;
+    &lt;Streams&gt;
+      &lt;Stream name="B-Mode"&gt;
+        &lt;Parameters&gt;
+          &lt;Parameter name="depth" min="5" max="220" step="5"/&gt;
+        &lt;/Parameters&gt;
+      &lt;/Stream&gt;
+      &lt;Stream name="Angio"&gt;
+        &lt;Parameters&gt;
+          &lt;Parameter name="depth" min="5" max="220" step="5"/&gt;
+        &lt;/Parameters&gt;
+      &lt;/Stream&gt;
+    &lt;/Streams&gt;
+    &lt;Presets&gt;
+      &lt;Preset name="Vascular small object B+Angio"&gt;
+        &lt;Probe Name=”L14-5/38” /&gt;
+        &lt;Parameter Name=”Depth” Value=”50” /&gt;
+      &lt;/Preset&gt;
+    &lt;/Presets&gt;
+  &lt;/UltrasoundCapabilities&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<h3>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h3>
+
+<ol>
+<li><a href="http://wiki.na-mic.org/Wiki/index.php/2016_Winter_Project_Week/Projects/TrackedUltrasoundStandardization">http://wiki.na-mic.org/Wiki/index.php/2016_Winter_Project_Week/Projects/TrackedUltrasoundStandardization</a></li>
+<li><a href="http://openigtlink.org/protocols/v3_proposal.html">http://openigtlink.org/protocols/v3_proposal.html</a></li>
+<li><a href="https://github.com/IGSIO/OpenIGTLinkIF">https://github.com/IGSIO/OpenIGTLinkIF</a></li>
+</ol>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
