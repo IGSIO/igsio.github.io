@@ -1,13 +1,13 @@
 ### Mission
-The IGSIO was founded after lenghty discussions regarding the standardization of tracked ultrasound communication to work towards improving the interoperability between industrial products and research software platforms [[1]](http://wiki.na-mic.org/Wiki/index.php/2016_Winter_Project_Week/Projects/TrackedUltrasoundStandardization). Prior to these discussions, the commonly accepted solution was to pass specially constructed messages over the OpenIGTLink protocol. This workaround solution indicated that a more formal definition was needed to enable the research community to move towards a vision held by the founding members.
+The IGSIO was founded after lengthy discussions regarding the standardization of tracked ultrasound communication to work towards improving the interoperability between industrial products and research software platforms [[1]](http://wiki.na-mic.org/Wiki/index.php/2016_Winter_Project_Week/Projects/TrackedUltrasoundStandardization). Prior to these discussions, the commonly accepted solution was to pass specially constructed messages over the OpenIGTLink protocol. This workaround solution indicated that a more formal definition was needed to enable the research community to move towards a vision held by the founding members.
 
-The mission of the IGSIO is to develop a written standard defining the communication of tracked ultrasound systems between software platforms and to implement a reference implementation of an OpenIGTLink client and server for use by any adhering software platform.
+The mission of the IGSIO is to develop a written standard defining the communication of tracked ultrasound systems between software platforms and to produce an open-source reference implementation of an OpenIGTLink client and server for use by any adhering software platform.
 
 ### Goals
 We seek to achieve the following goals:
 * To advance the image-guided systems community through co-operation and collaboration
 * To define a written standard for tracked ultrasound communication
-* To provide a reference standard implentation of a tracked ultrasound client/server
+* To provide a reference standard implementation of a tracked ultrasound client/server
 
 ### Founding Members
 IGSIO was founded at the NAMIC 2016 Winter Project week in Cambridge, Massachusetts. Founding members include:
@@ -15,14 +15,17 @@ IGSIO was founded at the NAMIC 2016 Winter Project week in Cambridge, Massachuse
 * Adam Rankin @adamrankin ([VASST Laboratory](http://www.imaging.robarts.ca/petergrp/Research), Western University, Canada)
 * Christian Askeland @christiana ([SINTEF Medical Technology](http://www.sintef.no/en/technology-and-society/departments/medical-technology/#/), Norway)
 * Simon Drouin @drouin-simon ([Neuroimaging and Surgical Tools Lab](http://www.bic.mni.mcgill.ca/ResearchLabsIPL/HomePage), McGill University, Canada)
-* Thomas Kirchner @thkirchner ([German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html), Helmholtz Association, Germany)
-* Janek Gröhl @jgroehl ([German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html), Helmholtz Association, Germany)
+* Thomas Kirchner @thkirchner ([German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html), Germany)
+* Janek Gröhl @jgroehl ([German Cancer Research Center (DKFZ)](https://www.dkfz.de/en/index.html), Germany)
 
-### The Standard
+### The Standard: Tracked Ultrasound over OpenIGTLink (TUO)
 The standard is presented here as a draft. Extensions to the OpenIGTLink protocol have been proposed [[2]](http://openigtlink.org/protocols/v3_proposal.html) and implementation of these extensions is underway [[3]](https://github.com/IGSIO/OpenIGTLinkIF).
 
-> #### Standard Draft (r0.1)
+> #### Standard Draft
+Revision 0.1 of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.
+
 > ##### Parameters
+***
 > These are the parameters that are common to the majority of ultrasound imaging devices and are thus supported by the standard. See individual commands for specific usage.
 
 > *Read-write*
@@ -48,8 +51,12 @@ The standard is presented here as a draft. Extensions to the OpenIGTLink protoco
 > * Encoding: how to interpret values ("BRIGHTNESS", "RF_REAL", "RF_IQ_LINE", "RF_I_LINE_Q_LINE", "RGB_COLOR")
 
 > ####Commands
+***
+Presented here are the commands supported by the standard. Their syntax is defined and their usage is described. All XML strings are passed in the body of the OpenIGTLink (v3+) *COMMAND* message type.
+
 > #####SetDeviceParameters
 > Specify a list of parameters to set their current hardware values
+
 > *Message*
 
     <Command>
