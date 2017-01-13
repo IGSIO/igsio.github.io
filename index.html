@@ -19,8 +19,6 @@
         <h1 class="header">Image<br>Guided<br>Systems<br>Inter<br>Operability</h1>
         <p class="header">Advancing open-source image guided systems through cooperation and collaboration.</p>
 
-
-
         <ul>
           <li><a class="buttons github" href="https://github.com/IGSIO">GitHub Profile</a></li>
         </ul>
@@ -68,64 +66,35 @@
 <blockquote>
 <h4>
 <a id="standard-draft" class="anchor" href="#standard-draft" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard Draft</h4>
-
-<p>Revision 0.2 (2017) of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
-
-<h5>
-<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h5>
-
 <hr>
-
-<p>These are the parameters that are common to the majority of ultrasound imaging devices and are thus supported by the standard. See individual commands for specific usage.</p>
-
-<p><em>Read-write</em></p>
-
-<ul>
-<li>Depth (mm): (“40”, “45”, “50”, …) </li>
-<li>ImagingMode (string): (“bmode”, “bmode+rf”, “bmode+angio”, “rf+angio”, ...)</li>
-<li>Probe (string): probe name (“L14-5/38”)</li>
-<li>Frequency (MHz)</li>
-<li>DynRange (db)</li>
-<li>Gain (%)</li>
-<li>Power (%)</li>
-<li>Zoom (%)</li>
-<li>SoundVelocity (m/s)</li>
-<li>TGC (space-separated string, each entry -1.0 to 1.0)</li>
-<li>AcquisitionState (string): “FREEZE” or “RUN”</li>
-</ul>
-
-<p><em>Read-only</em></p>
-
-<ul>
-<li>ClipRectangleOrigin="27 27"</li>
-<li>ClipRectangleSize="766 562"</li>
-<li>FanAnglesDeg=”-30 30” (for 3D: FanAnglesDeg=”-30 30 -15 15”)</li>
-<li>FanOriginPixel=”240 10”</li>
-<li>FanRadiusStartPixel=”30”</li>
-<li>FanRadiusStopPixel=”500”</li>
-<li>Encoding: how to interpret values ("BRIGHTNESS", "RF_REAL", "RF_IQ_LINE", "RF_I_LINE_Q_LINE", "RGB_COLOR")</li>
-</ul>
+<p>Revision 0.2 (winter 2017) of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
 
 <h4>
-<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands</h4>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>The communication protocol</h4>
 
 <hr>
 
-<p>Presented here are the commands supported by the igsio standard. Their syntax is defined and their usage is described. Queries and their respons are handled by <em>COMMAND</em> messages and the information requested is passed using the other types of messages. Alle message types are specified in the <a href="http://openigtlink.org/protocols/v3_proposal.html">OpenIGTLink standard v3</a>.</p>
+<p>A client and a server connects over OpenIGTLink. Messages can be then be sent both ways. To request information a query is sent.</p>
 
-<p>There are 4 command names: Get, Set, Subscribe and Unsubscribe. This name is specified in the COMMAND messages command_name field. What kind of information is requested is specified by the content of the body.</p>
+<p>Queries and their response are handled by the <em>COMMAND</em> message, introduced in the OpenIGTLink v3 standard. The information requested is passed using the other types of messages. Every query (COMMAND) should result in a respons (RTS_COMMAND) and optionally one or more other message types. All message types are specified in the <a href="http://openigtlink.org/protocols/v3_proposal.html">OpenIGTLink standard v3</a>.</p>
 
-<p> &#91;...&#93; contains the message type to be sendt and specific fields from the message header or body. The content of the COMMAND message is specified below the &#91;...&#93; field.</p>
+<center><img src="images/command-sequence.png" style="width:300px;height:250px;"></center>
+
+<p>The COMMAND message has a command name. There are 4 command names defined: Get, Set, Subscribe and Unsubscribe. The command name is specified in the COMMAND messages command_name field. The body of the COMMAND message contains a content field which will specify what kind of information is requested. The content is structured using xml tags.</p>
 
 <h4>Command names</h4>
+<p> "Get" requests information one time, like the depth setting of the scanner. "Set" requests setting for example a parameter on a scanner. "Subscribe" and "Unsubscribe" requests to start or stop getting continuous updates, for example getting updates when the depth setting is changed. </p>
+
+<h4>Examples</h4>
+<hr>
+<p>Here are some examples illustrating how to request information using this standard and what respons to expect. &#91; TYPE=..., device_name=... &#93; contains the message type to be sendt and specific fields from the message header or body. The content of the COMMAND message is specified below the &#91; TYPE=..., device_name=... &#93; field.</p>
 
 <h5><a id="get" class="anchor" href="#get" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get</h5>
-
 <p>Request getting information of a certain type.</p>
 
 <h6> Example 1: </h6>
 
-<p><em>Query</em></p>
+<p><em>Query:</em> "<b>Get</b> the values for depth and gain."</p>
 </blockquote>
 
 <pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
@@ -136,7 +105,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Respons</em></p>
+<p><em>Respons:</em> "You can get the depth value, but not the gain value."</p>
 </blockquote>
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
@@ -147,7 +116,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Information</em></p>
+<p><em>Information:</em> "Here is the depth value."</p>
 </blockquote>
 
 <pre><code>&#91; Type = STRING, device_name = name &#93;
@@ -157,9 +126,7 @@
 <blockquote>
 <h6> Example 2: </h6>
 
-<p>Request the functionality of the server's current configuration.</p>
-
-<p><em>Query</em></p>
+<p><em>Query:</em> "Get the functionality of the server's current configuration."</p>
 </blockquote>
 
 <pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
@@ -169,7 +136,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Response</em></p>
+<p><em>Response:</em> "You can get the servers capabilities."</p>
 </blockquote>
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
@@ -179,7 +146,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Information</em></p>
+<p><em>Information:</em> "Here are the server capabilities."</p>
 </blockquote>
 
 <pre><code>&#91; Type = STRING, device_name = name &#93;
@@ -221,7 +188,9 @@
 
 <p>Request setting information of a certain type.</p>
 
-<p><em>Query</em></p>
+<h6> Example 3: </h6>
+
+<p><em>Query:</em> "Set the us scanners depth and gain values."</p>
 </blockquote>
 
 <pre><code>&#91; Type = COMMAND, device_name = name, command_name = Set &#93;
@@ -232,7 +201,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Respons</em></p>
+<p><em>Respons:</em> "Setting depth was a success. Setting gain was not a success."</p>
 </blockquote>
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Set &#93;
@@ -243,11 +212,12 @@
 </code></pre>
 
 <blockquote>
-<p><em>Information</em></p>
+<p><em>Information:</em> "Here are the current values for depth and gain. (Depth was changed, but not to the exact requested value. Gain was not changed.)"</p>
 </blockquote>
 
 <pre><code>&#91; Type = STRING, device_name = name &#93;
 &lt;Parameter Name=”Depth” Value=”40” /&gt;
+&lt;Parameter Name=”Gain” Value=”30” /&gt;
 </code></pre>
 
 <blockquote>
@@ -256,18 +226,21 @@
 
 <p>This will cause the server to send information of the requested type each time the information changes.</p>
 
-<p><em>Query</em></p>
+<h6> Example 4: </h6>
+
+<p><em>Query:</em> "Subscribe to changes in depth. Subscribe to new images."</p>
 </blockquote>
 
 <pre><code>&#91; Type = COMMAND, device_name = name, command_name = Subscribe &#93;
 &lt;Command&gt;
-    &lt;Parameter Name=”Depth” Value=45 /&gt;
-    &lt;Image /&gt;
+    &lt;Parameter Name=”Depth” /&gt;
+    &lt;Image /&gt;(*)
 &lt;/Command&gt;
 </code></pre>
+<p><em>(*) maybe we do not want to allow asking for more than one type of information in a single command</em></p>
 
 <blockquote>
-<p><em>Respons</em></p>
+<p><em>Respons:</em> "Subscribing to both depth and image was a success."</p>
 </blockquote>
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Subscribe &#93;
@@ -278,7 +251,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Information</em></p>
+<p><em>Information:</em> "Here are the changing depth values and new images."</p>
 </blockquote>
 
 <pre><code>&#91; Type = STRING, device_name = name &#93;
@@ -303,7 +276,9 @@
 
 <p>This will cause the server to <em>stop sending</em> information of the requested type.</p>
 
-<p><em>Query</em></p>
+<h6> Example 5: </h6>
+
+<p><em>Query:</em> "Unsubscribe to images."</p>
 </blockquote>
 
 <pre><code>&#91; Type = COMMAND, device_name = name, command_name = Unsubscribe &#93;
@@ -313,7 +288,7 @@
 </code></pre>
 
 <blockquote>
-<p><em>Respons</em></p>
+<p><em>Respons:</em> "Unsubscribing was a success. You will no longer get new images."</p>
 </blockquote>
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Unsubscribe &#93;
@@ -321,6 +296,41 @@
   &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
+
+<h5>
+<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h5>
+
+<hr>
+<p>Ultrasound imaging devices have parameters that can be changed. The OpenIGTLinkIO standard defines a set of parameters that are common to the majority of such devices. Anyone implementing support for a new hardware device using the OpenIGTLinkIO standard should add support for the following parameters.</p>
+<p>Parameters can be queried using the COMMAND message as explained under the communication protocol.</p>
+
+<p><em>Read-write parameters</em></p>
+
+<ul>
+<li>Depth (mm): (“40”, “45”, “50”, …) </li>
+<li>ImagingMode (string): (“bmode”, “bmode+rf”, “bmode+angio”, “rf+angio”, ...)</li>
+<li>Probe (string): probe name (“L14-5/38”)</li>
+<li>Frequency (MHz)</li>
+<li>DynRange (db)</li>
+<li>Gain (%)</li>
+<li>Power (%)</li>
+<li>Zoom (%)</li>
+<li>SoundVelocity (m/s)</li>
+<li>TGC (space-separated string, each entry -1.0 to 1.0)</li>
+<li>AcquisitionState (string): “FREEZE” or “RUN”</li>
+</ul>
+
+<p><em>Read-only parameters</em></p>
+
+<ul>
+<li>ClipRectangleOrigin="27 27"</li>
+<li>ClipRectangleSize="766 562"</li>
+<li>FanAnglesDeg=”-30 30” (for 3D: FanAnglesDeg=”-30 30 -15 15”)</li>
+<li>FanOriginPixel=”240 10”</li>
+<li>FanRadiusStartPixel=”30”</li>
+<li>FanRadiusStopPixel=”500”</li>
+<li>Encoding: how to interpret values ("BRIGHTNESS", "RF_REAL", "RF_IQ_LINE", "RF_I_LINE_Q_LINE", "RGB_COLOR")</li>
+</ul>
 
 <h3>
 <a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h3>
