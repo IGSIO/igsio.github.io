@@ -57,6 +57,7 @@
 <li>Simon Drouin <a href="https://github.com/drouin-simon" class="user-mention">@drouin-simon</a> (<a href="http://www.bic.mni.mcgill.ca/ResearchLabsIPL/HomePage">Neuroimaging and Surgical Tools Lab</a>, McGill University, Canada)</li>
 <li>Thomas Kirchner <a href="https://github.com/thkirchner" class="user-mention">@thkirchner</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
 <li>Janek Gröhl <a href="https://github.com/jgroehl" class="user-mention">@jgroehl</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
+<li>Janne Beate Bakeng <a href="https://github.com/jbake" class="user-mention">@jbake</a> (<a href="http://www.sintef.no/en/technology-and-society/departments/medical-technology/#/">SINTEF Medical Technology</a>, Norway)</li>
 </ul>
 
 <h3>
@@ -68,7 +69,7 @@
 <h4>
 <a id="standard-draft" class="anchor" href="#standard-draft" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard Draft</h4>
 
-<p>Revision 0.1 of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
+<p>Revision 0.2 (2017) of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
 
 <h5>
 <a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h5>
@@ -110,84 +111,60 @@
 
 <hr>
 
-<p>Presented here are the commands supported by the standard. Their syntax is defined and their usage is described. All XML strings are passed in the body of the OpenIGTLink (v3+) <em>COMMAND</em> message type.</p>
+<p>Presented here are the commands supported by the igsio standard. Their syntax is defined and their usage is described. Queries and their respons are handled by <em>COMMAND</em> messages and the information requested is passed using the other types of messages. Alle message types are specified in the <a href="http://openigtlink.org/protocols/v3_proposal.html">OpenIGTLink standard v3</a>.</p>
 
-<h5>
-<a id="setdeviceparameters" class="anchor" href="#setdeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>SetDeviceParameters</h5>
+<p>There are 4 command names: Get, Set, Subscribe and Unsubscribe. This name is specified in the COMMAND messages command_name field. What kind of information is requested is specified by the content of the body.</p>
 
-<p>Specify a list of parameters to set their current hardware values</p>
+<p> &#91;...&#93; contains the message type to be sendt and specific fields from the message header or body. The content of the COMMAND message is specified below the &#91;...&#93; field.</p>
 
-<p><em>Message</em></p>
+<h4>Command names</h4>
+
+<h5><a id="get" class="anchor" href="#get" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get</h5>
+
+<p>Request getting information of a certain type.</p>
+
+<h6> Example 1: </h6>
+
+<p><em>Query</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;
-    &lt;Parameter Name=”Depth” Value=”45” /&gt;
-    &lt;Parameter Name=”Gain” Value=”35” /&gt;
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
+&lt;Command&gt;
+    &lt;Parameter Name=”Depth” /&gt;
+    &lt;Parameter Name=”Gain”  /&gt;
 &lt;/Command&gt;
 </code></pre>
 
 <blockquote>
-<p><em>Response 1</em></p>
+<p><em>Respons</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;
-  &lt;Result&gt;SetDeviceParameters: success&lt;/Result&gt;
-  &lt;Parameter Name=”Depth” Value=”45” /&gt;
-  &lt;Parameter Name=”Gain” Value=”35” /&gt;
-  ...
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
+&lt;Command&gt;
+  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
 <blockquote>
-<p><em>Response 2</em></p>
+<p><em>Information</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;
-  &lt;Result&gt;SetDeviceParameters: failure&lt;/Result&gt; &lt;!-- see command status error code --&gt;
-&lt;/Command&gt;
+<pre><code>&#91; Type = STRING, device_name = name &#93;
+&lt;Parameter Name=”Depth” Value=”45” /&gt;
 </code></pre>
 
 <blockquote>
-<h5>
-<a id="getdeviceparameters" class="anchor" href="#getdeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>GetDeviceParameters</h5>
+<h6> Example 2: </h6>
 
-<p>Specify a list of parameters to retrieve their current hardware values (not cached)</p>
+<p>Request the functionality of the server's current configuration.</p>
 
-<p><em>Message</em></p>
+<p><em>Query</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;
-  &lt;Parameter Name=”Depth” /&gt;
-  &lt;Parameter Name=”Gain” /&gt;
-  ...
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Response</em></p>
-</blockquote>
-
-<pre><code>&lt;Command&gt;
-  &lt;Result&gt;GetDeviceParameters: success&lt;/Result&gt;
-  &lt;Parameter Name=”Depth” Value=”45” /&gt;
-  &lt;Parameter Name=”Gain” Value=”35” /&gt;
-  ...
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<h5>
-<a id="subscribedeviceparameters" class="anchor" href="#subscribedeviceparameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>SubscribeDeviceParameters</h5>
-
-<p>This will cause the server to send a GetDeviceParameters reply every time any of the subscribed parameters change.</p>
-
-<p><em>Message</em></p>
-</blockquote>
-
-<pre><code>&lt;Command&gt;
-  &lt;Parameter Name=”Depth” Subscribe=”TRUE” /&gt;
-  &lt;Parameter Name=”Gain” Subscribe=”FALSE” /&gt;
-  ...
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
+&lt;Command&gt;
+    &lt;Capabilities /&gt;
 &lt;/Command&gt;
 </code></pre>
 
@@ -195,33 +172,18 @@
 <p><em>Response</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;
-  &lt;Result&gt;SubscribeDeviceParameters: success&lt;/Result&gt;
-  &lt;Parameter Name=”Depth” Subscribed="TRUE" /&gt;
-  &lt;Parameter Name=”Gain” Subscribed="FALSE" /&gt;
-  ...
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
+&lt;Command&gt;
+    &lt;Result success=true&gt; &lt;Capabilities /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
 <blockquote>
-<h5>
-<a id="getcapabilities" class="anchor" href="#getcapabilities" aria-hidden="true"><span class="octicon octicon-link"></span></a>GetCapabilities</h5>
-
-<p>Request the functionality of the server's current configuration
-Note: future functionality support, SINTEF will specify and implement.</p>
-
-<p><em>Message</em></p>
+<p><em>Information</em></p>
 </blockquote>
 
-<pre><code>&lt;Command&gt;&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Response</em></p>
-</blockquote>
-
-<pre><code>&lt;Command&gt;
-  &lt;Result&gt;GetCapabilities: success&lt;/Result&gt;
+<pre><code>&#91; Type = STRING, device_name = name &#93;
+&lt;Capabilities&gt;
   &lt;UltrasoundCapabilities&gt;
     &lt;Probes&gt;
       &lt;Probe name="L14-5/38"/&gt;
@@ -249,6 +211,114 @@ Note: future functionality support, SINTEF will specify and implement.</p>
       &lt;/Preset&gt;
     &lt;/Presets&gt;
   &lt;/UltrasoundCapabilities&gt;
+&lt;/Capabilities&gt;
+</code></pre>
+
+
+<blockquote>
+<h5>
+<a id="set" class="anchor" href="#set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set</h5>
+
+<p>Request setting information of a certain type.</p>
+
+<p><em>Query</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Set &#93;
+&lt;Command&gt;
+    &lt;Parameter Name=”Depth” Value=45 /&gt;
+    &lt;Parameter Name=”Gain” Value=35 /&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Respons</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Set &#93;
+&lt;Command&gt;
+  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Information</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = STRING, device_name = name &#93;
+&lt;Parameter Name=”Depth” Value=”40” /&gt;
+</code></pre>
+
+<blockquote>
+<h5>
+<a id="subscribe" class="anchor" href="#subscribe" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subscribe</h5>
+
+<p>This will cause the server to send information of the requested type each time the information changes.</p>
+
+<p><em>Query</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Subscribe &#93;
+&lt;Command&gt;
+    &lt;Parameter Name=”Depth” Value=45 /&gt;
+    &lt;Image /&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Respons</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Subscribe &#93;
+&lt;Command&gt;
+  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Information</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = STRING, device_name = name &#93;
+&lt;Parameter Name=”Depth” Value=”40” /&gt;
+
+&#91; Type = IMAGE, device_name = name &#93;
+
+&#91; Type = IMAGE, device_name = name &#93;
+
+&#91; Type = STRING, device_name = name &#93;
+&lt;Parameter Name=”Depth” Value=”50” /&gt;
+
+&#91; Type = IMAGE, device_name = name &#93;
+
+&#91; Type = IMAGE, device_name = name &#93;
+...
+</code></pre>
+
+<blockquote>
+<h5>
+<a id="unsubscribe" class="anchor" href="#unsubscribe" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unsubscribe</h5>
+
+<p>This will cause the server to <em>stop sending</em> information of the requested type.</p>
+
+<p><em>Query</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Unsubscribe &#93;
+&lt;Command&gt;
+    &lt;Image /&gt;
+&lt;/Command&gt;
+</code></pre>
+
+<blockquote>
+<p><em>Respons</em></p>
+</blockquote>
+
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Unsubscribe &#93;
+&lt;Command&gt;
+  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
