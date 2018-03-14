@@ -97,7 +97,7 @@
 <p><em>Query:</em> "<b>Get</b> the values for depth and gain."</p>
 </blockquote>
 
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = GetParameterValue &#93;
 &lt;Command&gt;
     &lt;Parameter Name=”Depth” /&gt;
     &lt;Parameter Name=”Gain”  /&gt;
@@ -108,10 +108,10 @@
 <p><em>Respons:</em> "You can get the depth value, but not the gain value."</p>
 </blockquote>
 
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = GetParameterValue &#93;
 &lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
+  &lt;Result success="true"&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success="false"&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
@@ -129,7 +129,7 @@
 <p><em>Query:</em> "Get the functionality of the server's current configuration."</p>
 </blockquote>
 
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = GetCapabilities &#93;
 &lt;Command&gt;
     &lt;Capabilities /&gt;
 &lt;/Command&gt;
@@ -139,9 +139,9 @@
 <p><em>Response:</em> "You can get the servers capabilities."</p>
 </blockquote>
 
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = GetCapabilities &#93;
 &lt;Command&gt;
-    &lt;Result success=true&gt; &lt;Capabilities /&gt; &lt;/Result&gt;
+    &lt;Result success="true"&gt; &lt;Capabilities /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
@@ -193,7 +193,7 @@
 <p><em>Query:</em> "Set the us scanners depth and gain values."</p>
 </blockquote>
 
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Set &#93;
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = SetParameterValue &#93;
 &lt;Command&gt;
     &lt;Parameter Name=”Depth” Value=45 /&gt;
     &lt;Parameter Name=”Gain” Value=35 /&gt;
@@ -204,10 +204,10 @@
 <p><em>Respons:</em> "Setting depth was a success. Setting gain was not a success."</p>
 </blockquote>
 
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Set &#93;
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = SetParameterValue &#93;
 &lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
+  &lt;Result success="true"&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success="false"&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
@@ -231,7 +231,7 @@
 <p><em>Query:</em> "Subscribe to changes in depth. Subscribe to new images."</p>
 </blockquote>
 
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Subscribe &#93;
+<pre><code>&#91; Type = COMMAND, device_name = name, command_name = SubscribeParameterValue &#93;
 &lt;Command&gt;
     &lt;Parameter Name=”Depth” /&gt;
     &lt;Image /&gt;(*)
@@ -243,10 +243,10 @@
 <p><em>Respons:</em> "Subscribing to both depth and image was a success."</p>
 </blockquote>
 
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Subscribe &#93;
+<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = SubscribeParameterValue &#93;
 &lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
+  &lt;Result success="true"&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
+  &lt;Result success="true"&gt; &lt;Image /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
@@ -293,7 +293,7 @@
 
 <pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Unsubscribe &#93;
 &lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
+  &lt;Result success="true"&gt; &lt;Image /&gt; &lt;/Result&gt;
 &lt;/Command&gt;
 </code></pre>
 
