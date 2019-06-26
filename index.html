@@ -66,8 +66,9 @@
 <h4>
 <a id="ultrasound-sector-information" class="anchor" href="#ultrasound-sector-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ultrasound sector information</h4>
 <hr>
-<p>Ultrasound sector information is added to the ultrasound image packages as meta information: <a ref="http://openigtlink.org/developers/spec#meta-data"OpenIGTLink specification</a></p>
-	      
+<p>Ultrasound sector information is added to the ultrasound image packages as meta information: <a href="http://openigtlink.org/developers/spec#meta-data"OpenIGTLink specification</a>.
+See the implementation in the Plus Toolkit <a href="https://github.com/PlusToolkit/PlusLib/blob/8d2a180c2c2b299b6ca4c6cfbc8e7136360b02b1/src/PlusDataCollection/BkProFocus/vtkPlusBkProFocusOemVideoSource.cxx#L1293-L1326">vtkPlusBkProFocusOemVideoSource.cxx</a>      </p>
+
 <ul>
 <li>ProbeType - Sector probe = 1, Linear probe = 2, Mechanical probe = 3</li>
 <li>Origin - Sector origin relative to upper left corner of image, in pixels.</li>
