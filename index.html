@@ -69,6 +69,7 @@
 <p>Ultrasound sector information is added to the ultrasound image packages as meta information: <a href="http://openigtlink.org/developers/spec#meta-data"OpenIGTLink specification</a>.
 See the implementation in the Plus Toolkit <a href="https://github.com/PlusToolkit/PlusLib/blob/8d2a180c2c2b299b6ca4c6cfbc8e7136360b02b1/src/PlusDataCollection/BkProFocus/vtkPlusBkProFocusOemVideoSource.cxx#L1293-L1326">vtkPlusBkProFocusOemVideoSource.cxx</a>      </p>
 
+<p>Needed meta information fields to recreate ultrasound image sector</p>
 <ul>
 <li>ProbeType - Sector probe = 1, Linear probe = 2, Mechanical probe = 3</li>
 <li>Origin - Sector origin relative to upper left corner of image, in pixels.</li>
@@ -80,6 +81,8 @@ See the implementation in the Plus Toolkit <a href="https://github.com/PlusToolk
 <li>SpacingY - Pixel spacing in the y direction, in mm.</li>
 </ul>
 	      
+<p>Other ultrasound parameters may be added as well as meta information fields. The vtkPlusBkProFocusOemVideoSource.cxx example adds depth and gain as well.</p> 
+  
 <h4>
 <a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>The communication protocol</h4>
 
