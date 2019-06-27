@@ -51,7 +51,7 @@
 <ul>
 <li>Andras Lasso <a href="https://github.com/lassoan" class="user-mention">@lassoan</a> (<a href="http://perk.cs.queensu.ca/">Laboratory for Percutaneous Surgery</a>, Queen's University, Canada)</li>
 <li>Adam Rankin <a href="https://github.com/adamrankin" class="user-mention">@adamrankin</a> (<a href="http://www.imaging.robarts.ca/petergrp/Research">VASST Laboratory</a>, Western University, Canada)</li>
-<li>Christian Askeland <a href="https://github.com/christiana" class="user-mention">@christiana</a> (<a href="http://www.sintef.no/en/technology-and-society/departments/medical-technology/#/">SINTEF Medical Technology</a>, Norway)</li>
+<li>Christian Askeland <a href="https://github.com/christiana" class="user-mention">@christiana</a> (<a href="https://www.sintef.no/en/technology-and-society/health_research/medical_technology/#/">SINTEF Medical Technology</a>, Norway)</li>
 <li>Simon Drouin <a href="https://github.com/drouin-simon" class="user-mention">@drouin-simon</a> (<a href="http://www.bic.mni.mcgill.ca/ResearchLabsIPL/HomePage">Neuroimaging and Surgical Tools Lab</a>, McGill University, Canada)</li>
 <li>Thomas Kirchner <a href="https://github.com/thkirchner" class="user-mention">@thkirchner</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
 <li>Janek Gröhl <a href="https://github.com/jgroehl" class="user-mention">@jgroehl</a> (<a href="https://www.dkfz.de/en/index.html">German Cancer Research Center (DKFZ)</a>, Germany)</li>
@@ -61,14 +61,28 @@
 <h3>
 <a id="the-standard-tracked-ultrasound-over-openigtlink-tuo" class="anchor" href="#the-standard-tracked-ultrasound-over-openigtlink-tuo" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Standard: Tracked Ultrasound over OpenIGTLink (TUO)</h3>
 
-<p>The standard is presented here as a draft. Extensions to the OpenIGTLink protocol have been proposed <a href="http://openigtlink.org/protocols/v3_proposal.html">here</a> and implementation of these extensions is underway <a href="https://github.com/IGSIO/OpenIGTLinkIO">here</a>.</p>
+<p>Extensions to the OpenIGTLink protocol was proposed <a href="http://openigtlink.org/protocols/v3_proposal.html">here</a> and these extensions were implemented in <a href="https://github.com/IGSIO/OpenIGTLinkIO">OpenIGTLinkIO</a>.</p>
 
-<blockquote>
 <h4>
-<a id="standard-draft" class="anchor" href="#standard-draft" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard Draft</h4>
+<a id="ultrasound-sector-information" class="anchor" href="#ultrasound-sector-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ultrasound sector information</h4>
 <hr>
-<p>Revision 0.2 (winter 2017) of the Tracked Ultrasound over OpenIGTLink (TUO) protocol is presented.</p>
+<p>Ultrasound sector information is added to the ultrasound image packages as meta information: <a href="http://openigtlink.org/developers/spec#meta-data"OpenIGTLink specification</a>.
+See the implementation in the Plus Toolkit <a href="https://github.com/PlusToolkit/PlusLib/blob/8d2a180c2c2b299b6ca4c6cfbc8e7136360b02b1/src/PlusDataCollection/BkProFocus/vtkPlusBkProFocusOemVideoSource.cxx#L1293-L1326">vtkPlusBkProFocusOemVideoSource.cxx</a>      </p>
 
+<p>Needed meta information fields to recreate ultrasound image sector</p>
+<ul>
+<li>ProbeType - Sector probe = 1, Linear probe = 2, Mechanical probe = 3</li>
+<li>Origin - Sector origin relative to upper left corner of image, in pixels.</li>
+<li>Angles - Probe sector angles relative to down, in radians. 2 angles for 2D, and 4 for 3D probes. For regular imaging with linear probes these will be 0</li>
+<li>BoundingBox - Boundaries to cut away areas outside the US sector, in pixels. 4 for 2D, and 6 for 3D.</li>
+<li>Depths - Start, stop depth, relative to the origin, for the imaging, in mm.</li>
+<li>LinearWidth - Width of linear probe, in mm.</li>
+<li>SpacingX - Pixel spacing in the x direction, in mm.</li>
+<li>SpacingY - Pixel spacing in the y direction, in mm.</li>
+</ul>
+	      
+<p>Other ultrasound parameters may be added as well as meta information fields. The vtkPlusBkProFocusOemVideoSource.cxx example adds depth and gain as well.</p> 
+  
 <h4>
 <a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>The communication protocol</h4>
 
@@ -87,250 +101,6 @@
 
 <h4>Examples</h4>
 <hr>
-<p>Here are some examples illustrating how to request information using this standard and what respons to expect. &#91; TYPE=..., device_name=... &#93; contains the message type to be sendt and specific fields from the message header or body. The content of the COMMAND message is specified below the &#91; TYPE=..., device_name=... &#93; field.</p>
-
-<h5><a id="get" class="anchor" href="#get" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get</h5>
-<p>Request getting information of a certain type.</p>
-
-<h6> Example 1: </h6>
-
-<p><em>Query:</em> "<b>Get</b> the values for depth and gain."</p>
-</blockquote>
-
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
-&lt;Command&gt;
-    &lt;Parameter Name=”Depth” /&gt;
-    &lt;Parameter Name=”Gain”  /&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Respons:</em> "You can get the depth value, but not the gain value."</p>
-</blockquote>
-
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
-&lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Information:</em> "Here is the depth value."</p>
-</blockquote>
-
-<pre><code>&#91; Type = STRING, device_name = name &#93;
-&lt;Parameter Name=”Depth” Value=”45” /&gt;
-</code></pre>
-
-<blockquote>
-<h6> Example 2: </h6>
-
-<p><em>Query:</em> "Get the functionality of the server's current configuration."</p>
-</blockquote>
-
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Get &#93;
-&lt;Command&gt;
-    &lt;Capabilities /&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Response:</em> "You can get the servers capabilities."</p>
-</blockquote>
-
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Get &#93;
-&lt;Command&gt;
-    &lt;Result success=true&gt; &lt;Capabilities /&gt; &lt;/Result&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Information:</em> "Here are the server capabilities."</p>
-</blockquote>
-
-<pre><code>&#91; Type = STRING, device_name = name &#93;
-&lt;Capabilities&gt;
-  &lt;UltrasoundCapabilities&gt;
-    &lt;Probes&gt;
-      &lt;Probe name="L14-5/38"/&gt;
-      &lt;Probe name="C5-2/42"/&gt;
-    &lt;/Probes&gt;
-    &lt;ImagingModes&gt;
-      &lt;ImagingMode Name=”b-mode+angio”&gt;B-Mode,Angio&lt;/ImagingMode&gt;
-    &lt;/ImagingModes&gt;
-    &lt;Streams&gt;
-      &lt;Stream name="B-Mode"&gt;
-        &lt;Parameters&gt;
-          &lt;Parameter name="depth" min="5" max="220" step="5"/&gt;
-        &lt;/Parameters&gt;
-      &lt;/Stream&gt;
-      &lt;Stream name="Angio"&gt;
-        &lt;Parameters&gt;
-          &lt;Parameter name="depth" min="5" max="220" step="5"/&gt;
-        &lt;/Parameters&gt;
-      &lt;/Stream&gt;
-    &lt;/Streams&gt;
-    &lt;Presets&gt;
-      &lt;Preset name="Vascular small object B+Angio"&gt;
-        &lt;Probe Name=”L14-5/38” /&gt;
-        &lt;Parameter Name=”Depth” Value=”50” /&gt;
-      &lt;/Preset&gt;
-    &lt;/Presets&gt;
-  &lt;/UltrasoundCapabilities&gt;
-&lt;/Capabilities&gt;
-</code></pre>
-
-
-<blockquote>
-<h5>
-<a id="set" class="anchor" href="#set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set</h5>
-
-<p>Request setting information of a certain type.</p>
-
-<h6> Example 3: </h6>
-
-<p><em>Query:</em> "Set the us scanners depth and gain values."</p>
-</blockquote>
-
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Set &#93;
-&lt;Command&gt;
-    &lt;Parameter Name=”Depth” Value=45 /&gt;
-    &lt;Parameter Name=”Gain” Value=35 /&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Respons:</em> "Setting depth was a success. Setting gain was not a success."</p>
-</blockquote>
-
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Set &#93;
-&lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=false&gt; &lt;Parameter Name=”Gain” /&gt; &lt;/Result&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Information:</em> "Here are the current values for depth and gain. (Depth was changed, but not to the exact requested value. Gain was not changed.)"</p>
-</blockquote>
-
-<pre><code>&#91; Type = STRING, device_name = name &#93;
-&lt;Parameter Name=”Depth” Value=”40” /&gt;
-&lt;Parameter Name=”Gain” Value=”30” /&gt;
-</code></pre>
-
-<blockquote>
-<h5>
-<a id="subscribe" class="anchor" href="#subscribe" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subscribe</h5>
-
-<p>This will cause the server to send information of the requested type each time the information changes.</p>
-
-<h6> Example 4: </h6>
-
-<p><em>Query:</em> "Subscribe to changes in depth. Subscribe to new images."</p>
-</blockquote>
-
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Subscribe &#93;
-&lt;Command&gt;
-    &lt;Parameter Name=”Depth” /&gt;
-    &lt;Image /&gt;(*)
-&lt;/Command&gt;
-</code></pre>
-<p><em>(*) maybe we do not want to allow asking for more than one type of information in a single command</em></p>
-
-<blockquote>
-<p><em>Respons:</em> "Subscribing to both depth and image was a success."</p>
-</blockquote>
-
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Subscribe &#93;
-&lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Parameter Name=”Depth” /&gt; &lt;/Result&gt;
-  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Information:</em> "Here are the changing depth values and new images."</p>
-</blockquote>
-
-<pre><code>&#91; Type = STRING, device_name = name &#93;
-&lt;Parameter Name=”Depth” Value=”40” /&gt;
-
-&#91; Type = IMAGE, device_name = name &#93;
-
-&#91; Type = IMAGE, device_name = name &#93;
-
-&#91; Type = STRING, device_name = name &#93;
-&lt;Parameter Name=”Depth” Value=”50” /&gt;
-
-&#91; Type = IMAGE, device_name = name &#93;
-
-&#91; Type = IMAGE, device_name = name &#93;
-...
-</code></pre>
-
-<blockquote>
-<h5>
-<a id="unsubscribe" class="anchor" href="#unsubscribe" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unsubscribe</h5>
-
-<p>This will cause the server to <em>stop sending</em> information of the requested type.</p>
-
-<h6> Example 5: </h6>
-
-<p><em>Query:</em> "Unsubscribe to images."</p>
-</blockquote>
-
-<pre><code>&#91; Type = COMMAND, device_name = name, command_name = Unsubscribe &#93;
-&lt;Command&gt;
-    &lt;Image /&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<blockquote>
-<p><em>Respons:</em> "Unsubscribing was a success. You will no longer get new images."</p>
-</blockquote>
-
-<pre><code>&#91; Type = RTS_COMMAND, device_name = name, command_name = Unsubscribe &#93;
-&lt;Command&gt;
-  &lt;Result success=true&gt; &lt;Image /&gt; &lt;/Result&gt;
-&lt;/Command&gt;
-</code></pre>
-
-<h5>
-<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h5>
-
-<hr>
-<p>Ultrasound imaging devices have parameters that can be changed. The OpenIGTLinkIO standard defines a set of parameters that are common to the majority of such devices. Anyone implementing support for a new hardware device using the OpenIGTLinkIO standard should add support for the following parameters.</p>
-<p>Parameters can be queried using the COMMAND message as explained under the communication protocol.</p>
-
-<p><em>Read-write parameters</em></p>
-
-<ul>
-<li>Depth (mm): (“40”, “45”, “50”, …) </li>
-<li>ImagingMode (string): (“bmode”, “bmode+rf”, “bmode+angio”, “rf+angio”, ...)</li>
-<li>Probe (string): probe name (“L14-5/38”)</li>
-<li>Frequency (MHz)</li>
-<li>DynRange (db)</li>
-<li>Gain (%)</li>
-<li>Power (%)</li>
-<li>Zoom (%)</li>
-<li>SoundVelocity (m/s)</li>
-<li>TGC (space-separated string, each entry -1.0 to 1.0)</li>
-<li>AcquisitionState (string): “FREEZE” or “RUN”</li>
-</ul>
-
-<p><em>Read-only parameters</em></p>
-
-<ul>
-<li>ClipRectangleOrigin="27 27"</li>
-<li>ClipRectangleSize="766 562"</li>
-<li>FanAnglesDeg=”-30 30” (for 3D: FanAnglesDeg=”-30 30 -15 15”)</li>
-<li>FanOriginPixel=”240 10”</li>
-<li>FanRadiusStartPixel=”30”</li>
-<li>FanRadiusStopPixel=”500”</li>
-<li>Encoding: how to interpret values ("BRIGHTNESS", "RF_REAL", "RF_IQ_LINE", "RF_I_LINE_Q_LINE", "RGB_COLOR")</li>
-</ul>
 
 <h3>
 <a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h3>
